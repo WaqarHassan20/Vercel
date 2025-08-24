@@ -11,6 +11,12 @@ import path from "path"
 const publisher = createClient();
 publisher.connect();
 
+const subscriber = createClient();
+subscriber.connect();
+
+// We cannot read and write the data by only one redis client
+// So we have to create the publisher to write data and subscriber to read data
+
 const app = express()
 app.use(cors());
 
@@ -35,9 +41,20 @@ app.post("/deploy", async (req, res) => {
   console.log("Uploading Successfully Done!");
 
   publisher.lPush("build-queue", id);
+  publisher.hSet("status", id, "Uploaded");
   
   console.log(id);
   res.json({ id });
+});
+
+
+app.get("/status", async (req, res) => {
+  const id = req.query.id;
+  console.log(id);
+  const status = await subscriber.hGet("status", id as string);
+  res.json({
+    status: status,
+  });
 });
 
 app.listen(3000, () => {
