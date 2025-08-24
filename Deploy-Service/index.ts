@@ -29,7 +29,7 @@ async function main() {
     await copyFinalDist(id || "");
     console.log("Uploaing dist done");
 
-    publisher.hSet("status", id as string, "Deployed");
+    publisher.hSet("status", id as string, "deployed");
   }
 
 }

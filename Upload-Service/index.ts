@@ -41,7 +41,7 @@ app.post("/deploy", async (req, res) => {
   console.log("Uploading Successfully Done!");
 
   publisher.lPush("build-queue", id);
-  publisher.hSet("status", id, "Uploaded");
+  publisher.hSet("status", id, "uploaded");
   
   console.log(id);
   res.json({ id });
