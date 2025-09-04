@@ -3,6 +3,7 @@
 import { PutObjectCommand, S3 } from "@aws-sdk/client-s3";
 import fs from "fs";
 import path, { resolve } from "path";
+import { exec } from "child_process";
 
 const BUCKET_NAME = "vercel";
 
@@ -112,3 +113,10 @@ export const uploadFile = async (fileName: string, localFilePath: string) => {
 
   await s3.send(command);
 };
+
+export async function startNextServer(id: string) {
+  const projectPath = path.join(__dirname, `output/${id}`);
+  // Start the Next.js server (SSR/SSG)
+  exec("npm run start", { cwd: projectPath });
+  // You may want to manage ports and process lifecycles for multiple deployments
+}

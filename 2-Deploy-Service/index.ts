@@ -6,13 +6,15 @@ const subscriber = createClient();
 const publisher = createClient();
 
 async function main() {
-
   await subscriber.connect();
   await publisher.connect();
 
   while (true) {
     const response = await subscriber.brPop("build-queue", 0);
-    // console.log(response);
+    if (!response) {
+      // No item in queue, continue waiting
+      continue;
+    }
     const id = response?.element;
 
     console.log("Deploying id:", id);
@@ -31,7 +33,6 @@ async function main() {
 
     publisher.hSet("status", id as string, "deployed");
   }
-
 }
 
 main();
